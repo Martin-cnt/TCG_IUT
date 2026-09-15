@@ -2,6 +2,17 @@
 
 Site de collection de cartes, deployable sur Vercel avec une sauvegarde Supabase.
 
+## Structure
+
+```text
+index.html             point d'entree Vercel
+pages/home.html        page ouverture de boosters
+pages/binder.html      page classeur
+js/app.js              logique partagee et synchronisation Supabase
+assets/booster.jfif    visuel du booster
+styles.css             styles communs
+```
+
 ## 1. Creer la base Supabase
 
 1. Creer un projet sur [supabase.com](https://supabase.com).
