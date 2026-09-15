@@ -1,17 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TCG IUT - Accueil</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles.css" />
-</head>
-<body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="topbar"><a class="brand" href="home.html" aria-label="accueil"><span class="brand-mark">✦</span><span>TCG IUT</span></a><nav class="main-nav" aria-label="Navigation principale"><a class="nav-item active" href="home.html"><span class="nav-icon">▣</span> Ouvrir des boosters</a><a class="nav-item" href="binder.html"><span class="nav-icon">▤</span> Mon classeur</a></nav><div class="profile-pill"><span class="profile-dot"></span><span>Joueur</span><span class="chevron">⌄</span></div></header>
-  <main><section class="view active" id="packs-view"><div class="page-heading"><div><p class="eyebrow">Saison 01 <span></span></p><h1>Ouvre un nouveau<br><em>chapitre.</em></h1><p class="lede">Chaque pack contient 5 cartes. Collectionne les 72 cartes de l'IUT.</p></div><div class="collection-stamp"><span class="stamp-value" id="heading-progress">0</span><span>/ 72 cartes<br>collectées</span></div></div>
-  <div class="pack-layout"><div class="pack-showcase"><div class="pack-shadow"></div><img class="pack-art pack-image" src="../assets/booster.jfif" alt="Booster TCG IUT"><div class="pack-glow"></div></div><div class="pack-details"><h2>Terres<br><span>Naissantes</span></h2><p>Les premières lueurs se réveillent dans une contrée encore vierge. Trouveras-tu les créatures qui l'habitent ?</p><div class="rarity-row"><span class="rarity-label">TAUX DE RARETÉ</span><span class="rarity-line"></span><span class="rarity-value">1 ✦ / 5</span></div><button class="primary-button" id="open-pack-button"><span>Ouvrir un pack</span><span class="button-arrow">↗</span></button><p class="opening-note">Tu obtiendras exactement 5 cartes aléatoires.</p></div></div>
-  <div class="section-rule"><span>Dernières obtentions</span><span id="pack-count-label">0 packs ouverts</span></div><div class="recent-grid" id="recent-grid"></div></section></main>
-  <div class="modal-backdrop" id="pack-modal" aria-hidden="true"><div class="pack-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="close-modal" id="close-modal" aria-label="Fermer">×</button><p class="eyebrow">NOUVELLE OUVERTURE <span></span> PACK #<span id="modal-pack-number">01</span></p><h2 id="modal-title">Tes nouvelles<br><em>trouvailles.</em></h2><div class="revealed-grid" id="revealed-grid"></div><button class="secondary-button" id="modal-done">Ajouter au classeur <span>→</span></button></div></div><div class="toast" id="toast">Cartes ajoutées au classeur.</div>
-  <script src="../supabase-config.js"></script><script type="module" src="../js/app.js"></script>
-</body></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TCG IUT - Accueil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <header class="topbar">
+      <a class="brand" href="home.html" aria-label="accueil"
+        ><span class="brand-mark">✦</span><span>TCG IUT</span></a
+      >
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a class="nav-item active" href="home.html">Ouvrir des boosters</a>
+        <a class="nav-item" href="binder.html">Mon classeur</a>
+      </nav>
+    </header>
+    <main>
+      <section class="view active" id="packs-view">
+        <div class="page-heading">
+          <div>
+            <h1>Collectionne tout<br /><em>l'IUT.</em></h1>
+            <p class="lede">
+              Chaque pack contient 5 cartes. Collectionne les 72 cartes de
+              l'IUT.
+            </p>
+          </div>
+        </div>
+        <div class="pack-layout">
+          <div class="pack-showcase">
+            <button
+              class="booster-trigger"
+              id="booster-trigger"
+              aria-label="Ouvrir un pack"
+            >
+              <img
+                class="pack-art pack-image"
+                src="../assets/booster.png"
+                alt="Booster TCG IUT"
+              />
+            </button>
+          </div>
+          <div class="pack-details">
+            <h2>Les<br /><span>Légendes de l'IUT</span></h2>
+            <p>
+              Le lore du BUT Informatique est riche et mystérieux. Trouveras-tu
+              les toutes les légendes qui l'habitent ?
+            </p>
+
+            <button class="primary-button" id="open-pack-button">
+              <span>Ouvrir un pack</span><span class="button-arrow">↗</span>
+            </button>
+            <p class="opening-note">
+              Tu obtiendras exactement 5 cartes aléatoires.
+            </p>
+          </div>
+        </div>
+        <div class="section-rule">
+          <span>Dernières obtentions</span
+          ><span id="pack-count-label">0 packs ouverts</span>
+        </div>
+        <div class="recent-grid" id="recent-grid"></div>
+      </section>
+    </main>
+    <div class="modal-backdrop" id="pack-modal" aria-hidden="true">
+      <div
+        class="pack-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <button class="close-modal" id="close-modal" aria-label="Fermer">
+          ×
+        </button>
+        <p class="eyebrow">
+          NOUVELLE OUVERTURE <span></span> PACK #<span id="modal-pack-number"
+            >01</span
+          >
+        </p>
+        <h2 id="modal-title">Tes nouvelles<br /><em>trouvailles.</em></h2>
+        <div class="revealed-grid" id="revealed-grid"></div>
+        <button class="secondary-button" id="modal-done">
+          Ajouter au classeur <span>→</span>
+        </button>
+      </div>
+    </div>
+    <div class="toast" id="toast">Cartes ajoutées au classeur.</div>
+    <script src="../supabase-config.js"></script>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>

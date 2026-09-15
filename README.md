@@ -9,7 +9,7 @@ index.html             point d'entree Vercel
 pages/home.html        page ouverture de boosters
 pages/binder.html      page classeur
 js/app.js              logique partagee et synchronisation Supabase
-assets/booster.jfif    visuel du booster
+assets/booster.png     visuel du booster
 styles.css             styles communs
 ```
 
