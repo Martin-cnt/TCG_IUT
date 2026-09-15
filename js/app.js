@@ -207,6 +207,8 @@ function openPack() {
     revealed: 0,
   };
   $("#opening-stage").hidden = false;
+  $("#sealed-pack").disabled = false;
+  $("#sealed-pack").className = "sealed-pack";
   $("#revealing-stage").hidden = true;
   $("#revealed-grid").innerHTML = "";
   $("#opening-summary").hidden = true;
@@ -216,6 +218,7 @@ function openPack() {
   $("#modal-done").hidden = true;
   $("#close-modal").hidden = true;
   $("#pack-modal").classList.add("open");
+  $("#pack-modal").classList.remove("summary-mode");
   $("#pack-modal").setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
   $("#sealed-pack").focus();
@@ -223,16 +226,23 @@ function openPack() {
 function hitBooster() {
   opening.boosterClicks += 1;
   const remaining = 3 - opening.boosterClicks;
-  $("#sealed-pack").classList.add("hit");
-  setTimeout(() => $("#sealed-pack")?.classList.remove("hit"), 180);
+  const sealedPack = $("#sealed-pack");
+  sealedPack.classList.remove("hit", "damage-1", "damage-2");
+  sealedPack.classList.add(`damage-${opening.boosterClicks}`, "hit");
+  setTimeout(() => sealedPack?.classList.remove("hit"), 180);
   if (remaining > 0) {
     $("#opening-status").textContent =
       `Encore ${remaining} clic${remaining > 1 ? "s" : ""} sur le booster.`;
     return;
   }
-  $("#opening-stage").hidden = true;
-  $("#revealing-stage").hidden = false;
-  renderCurrentCard();
+  sealedPack.disabled = true;
+  sealedPack.classList.add("bursting");
+  $("#opening-status").textContent = "";
+  setTimeout(() => {
+    $("#opening-stage").hidden = true;
+    $("#revealing-stage").hidden = false;
+    renderCurrentCard();
+  }, 650);
 }
 function renderCurrentCard() {
   const index = opening.cards[opening.revealed];
@@ -261,6 +271,7 @@ async function revealNextCard() {
       .join("");
     $("#modal-done").hidden = false;
     $("#close-modal").hidden = false;
+    $("#pack-modal").classList.add("summary-mode");
     $("#modal-done").focus();
     renderStats();
     renderRecent();
@@ -271,6 +282,7 @@ async function revealNextCard() {
 }
 function closeModal() {
   $("#pack-modal").classList.remove("open");
+  $("#pack-modal").classList.remove("summary-mode");
   $("#pack-modal").setAttribute("aria-hidden", "true");
   document.body.classList.remove("modal-open");
   $("#toast").classList.add("show");
