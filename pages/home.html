@@ -78,18 +78,36 @@
         aria-modal="true"
         aria-labelledby="modal-title"
       >
-        <button class="close-modal" id="close-modal" aria-label="Fermer">
-          ×
+        <button
+          class="close-modal"
+          id="close-modal"
+          aria-label="Quitter l'ouverture"
+          title="Quitter l'ouverture"
+          hidden
+        >
+          × <span>Quitter</span>
         </button>
-        <p class="eyebrow">
-          NOUVELLE OUVERTURE <span></span> PACK #<span id="modal-pack-number"
-            >01</span
+        <div class="opening-stage" id="opening-stage">
+          <button
+            class="sealed-pack"
+            id="sealed-pack"
+            aria-label="Frapper le booster"
           >
-        </p>
-        <h2 id="modal-title">Tes nouvelles<br /><em>trouvailles.</em></h2>
-        <div class="revealed-grid" id="revealed-grid"></div>
-        <button class="secondary-button" id="modal-done">
-          Ajouter au classeur <span>→</span>
+            <img src="../assets/booster.png" alt="Booster à ouvrir" />
+          </button>
+          <p class="opening-status" id="opening-status">
+            Clique 3 fois sur le booster pour l'ouvrir.
+          </p>
+        </div>
+        <div class="revealing-stage" id="revealing-stage" hidden>
+          <div class="revealed-grid" id="revealed-grid"></div>
+          <div class="opening-summary" id="opening-summary" hidden>
+            <p class="summary-label">Les 5 cartes du pack</p>
+            <div class="summary-grid" id="summary-grid"></div>
+          </div>
+        </div>
+        <button class="secondary-button" id="modal-done" hidden>
+          Voir le classeur <span>→</span>
         </button>
       </div>
     </div>

@@ -24,6 +24,9 @@ body {
   font-family: "Space Grotesk", sans-serif;
   overflow-x: hidden;
 }
+body.modal-open {
+  overflow: hidden;
+}
 body:before {
   content: "";
   position: fixed;
@@ -623,6 +626,7 @@ main {
   place-items: center;
   z-index: 5;
   padding: 20px;
+  overflow: hidden;
 }
 .modal-backdrop.open {
   display: grid;
@@ -630,10 +634,13 @@ main {
 .pack-modal {
   background: #202323;
   border: 1px solid var(--line);
-  width: min(760px, 100%);
   padding: 43px 48px 38px;
   position: relative;
   box-shadow: 0 25px 100px #000;
+  overflow: visible;
+  max-height: none;
+  width: min(900px, 100%);
+  text-align: center;
 }
 .close-modal {
   position: absolute;
@@ -644,6 +651,15 @@ main {
   color: #8b8d88;
   font-size: 25px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px;
+}
+.close-modal span {
+  font: 10px "DM Mono";
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
 }
 .pack-modal h2 {
   font-size: 42px;
@@ -657,7 +673,8 @@ main {
 }
 .revealed-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: minmax(260px, 330px);
+  justify-content: center;
   gap: 10px;
 }
 .revealed-card {
@@ -667,6 +684,17 @@ main {
   padding: 10px;
   position: relative;
   animation: reveal 0.5s backwards;
+  cursor: pointer;
+  width: 100%;
+  min-height: 440px;
+  border-radius: 4px;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+}
+.revealed-card:hover {
+  border-color: var(--coral);
+  transform: translateY(-4px);
 }
 .revealed-card:nth-child(2) {
   animation-delay: 0.1s;
@@ -689,6 +717,52 @@ main {
 }
 .revealed-card .card-name {
   font-size: 10px;
+}
+.revealed-card .card-tap {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: var(--muted);
+  font: 8px "DM Mono";
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.opening-summary {
+  margin-top: 22px;
+}
+.summary-label {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font: 10px "DM Mono";
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.summary-card {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: rgba(71, 215, 242, 0.06);
+  text-align: center;
+}
+.summary-card > span {
+  display: block;
+  color: var(--card-color);
+  font-size: 22px;
+  line-height: 1.2;
+}
+.summary-card small {
+  display: block;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .revealed-card .rarity {
   font: 8px "DM Mono";
@@ -885,4 +959,99 @@ main {
 }
 .pack-image {
   background: transparent;
+}
+.opening-stage {
+  min-height: 500px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 18px;
+  width: 100%;
+}
+.sealed-pack {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.sealed-pack img {
+  width: 230px;
+  height: 405px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 26px rgba(0, 0, 0, 0.35));
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+.sealed-pack:hover img {
+  transform: translateY(-7px) rotate(-2deg);
+  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.45));
+}
+.sealed-pack:focus-visible,
+.reveal-next:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 8px;
+}
+.sealed-pack.hit {
+  animation: booster-hit 0.18s ease;
+}
+.opening-status {
+  margin: 0;
+  color: var(--muted);
+  font: 11px "DM Mono";
+  letter-spacing: 0.4px;
+  text-align: center;
+}
+.revealing-stage {
+  min-height: 500px;
+  display: grid;
+  align-content: center;
+}
+.revealing-stage[hidden],
+.opening-stage[hidden] {
+  display: none;
+}
+.reveal-next {
+  justify-self: center;
+  margin-top: 24px;
+  border: 1px solid rgba(71, 215, 242, 0.4);
+  border-radius: 999px;
+  padding: 11px 16px;
+  background: rgba(71, 215, 242, 0.1);
+  color: var(--ink);
+  font: 500 11px "Space Grotesk";
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.reveal-next:hover {
+  background: rgba(71, 215, 242, 0.2);
+  transform: translateY(-2px);
+}
+.revealed-card-entering {
+  animation: card-enter 0.45s ease both;
+}
+@keyframes booster-hit {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  35% {
+    transform: translateX(-7px) rotate(-3deg);
+  }
+  70% {
+    transform: translateX(7px) rotate(3deg);
+  }
+}
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.92) rotate(2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
 }

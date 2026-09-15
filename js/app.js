@@ -98,6 +98,11 @@ const supabase = hasSupabaseConfig
   ? createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey)
   : null;
 const $ = (selector) => document.querySelector(selector);
+let opening = {
+  cards: [],
+  boosterClicks: 0,
+  revealed: 0,
+};
 const cardData = (index) => ({
   index,
   name: cardNames[index],
@@ -195,30 +200,79 @@ function renderRecent() {
     })
     .join("");
 }
-async function openPack() {
-  const cards = randomCards();
-  state.packs += 1;
-  cards.forEach((index) => {
-    state.owned[index] = (state.owned[index] || 0) + 1;
-  });
-  state.recent = [...cards, ...state.recent].slice(0, 5);
-  await save();
-  $("#modal-pack-number").textContent = String(state.packs).padStart(2, "0");
-  $("#revealed-grid").innerHTML = cards
-    .map((index) => {
-      const card = cardData(index);
-      return `<article class="revealed-card" style="--card-color:${card.color}"><span class="rarity">${Math.random() > 0.8 ? "RARE" : "COMMUN"}</span><span class="card-glyph">${card.glyph}</span><span class="card-name">${card.name}</span></article>`;
-    })
-    .join("");
+function openPack() {
+  opening = {
+    cards: randomCards(),
+    boosterClicks: 0,
+    revealed: 0,
+  };
+  $("#opening-stage").hidden = false;
+  $("#revealing-stage").hidden = true;
+  $("#revealed-grid").innerHTML = "";
+  $("#opening-summary").hidden = true;
+  $("#summary-grid").innerHTML = "";
+  $("#opening-status").textContent =
+    "Clique 3 fois sur le booster pour l'ouvrir.";
+  $("#modal-done").hidden = true;
+  $("#close-modal").hidden = true;
   $("#pack-modal").classList.add("open");
   $("#pack-modal").setAttribute("aria-hidden", "false");
-  renderStats();
-  renderRecent();
-  renderBinder();
+  document.body.classList.add("modal-open");
+  $("#sealed-pack").focus();
+}
+function hitBooster() {
+  opening.boosterClicks += 1;
+  const remaining = 3 - opening.boosterClicks;
+  $("#sealed-pack").classList.add("hit");
+  setTimeout(() => $("#sealed-pack")?.classList.remove("hit"), 180);
+  if (remaining > 0) {
+    $("#opening-status").textContent =
+      `Encore ${remaining} clic${remaining > 1 ? "s" : ""} sur le booster.`;
+    return;
+  }
+  $("#opening-stage").hidden = true;
+  $("#revealing-stage").hidden = false;
+  renderCurrentCard();
+}
+function renderCurrentCard() {
+  const index = opening.cards[opening.revealed];
+  const card = cardData(index);
+  $("#revealed-grid").innerHTML =
+    `<button class="revealed-card revealed-card-entering" style="--card-color:${card.color}" aria-label="Découvrir la carte ${opening.revealed + 1}"><span class="rarity">${Math.random() > 0.8 ? "RARE" : "COMMUN"}</span><span class="card-glyph">${card.glyph}</span><span class="card-name">${card.name}</span><span class="card-tap">Cliquer pour continuer</span></button>`;
+  $("#revealed-grid .revealed-card").addEventListener("click", revealNextCard);
+}
+async function revealNextCard() {
+  if (opening.revealed >= opening.cards.length) return;
+  opening.revealed += 1;
+  if (opening.revealed === opening.cards.length) {
+    state.packs += 1;
+    opening.cards.forEach((cardIndex) => {
+      state.owned[cardIndex] = (state.owned[cardIndex] || 0) + 1;
+    });
+    state.recent = [...opening.cards, ...state.recent].slice(0, 5);
+    await save();
+    $("#revealed-grid").innerHTML = "";
+    $("#opening-summary").hidden = false;
+    $("#summary-grid").innerHTML = opening.cards
+      .map((cardIndex) => {
+        const card = cardData(cardIndex);
+        return `<div class="summary-card" style="--card-color:${card.color}"><span>${card.glyph}</span><small>${card.name}</small></div>`;
+      })
+      .join("");
+    $("#modal-done").hidden = false;
+    $("#close-modal").hidden = false;
+    $("#modal-done").focus();
+    renderStats();
+    renderRecent();
+    renderBinder();
+    return;
+  }
+  renderCurrentCard();
 }
 function closeModal() {
   $("#pack-modal").classList.remove("open");
   $("#pack-modal").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
   $("#toast").classList.add("show");
   setTimeout(() => $("#toast").classList.remove("show"), 2200);
 }
@@ -232,6 +286,7 @@ document.querySelectorAll(".filter").forEach((button) =>
 );
 $("#open-pack-button")?.addEventListener("click", openPack);
 $("#booster-trigger")?.addEventListener("click", openPack);
+$("#sealed-pack")?.addEventListener("click", hitBooster);
 $("#close-modal")?.addEventListener("click", closeModal);
 $("#modal-done")?.addEventListener("click", closeModal);
 $("#pack-modal")?.addEventListener("click", (event) => {
