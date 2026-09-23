@@ -663,6 +663,10 @@ main {
   gap: 7px;
   padding: 5px;
 }
+.close-modal[hidden],
+#modal-done[hidden] {
+  display: none !important;
+}
 .close-modal span {
   font: 10px "DM Mono";
   letter-spacing: 0.6px;

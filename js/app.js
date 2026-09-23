@@ -98,6 +98,14 @@ const supabase = hasSupabaseConfig
   ? createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey)
   : null;
 const $ = (selector) => document.querySelector(selector);
+function setOpeningActionsVisible(visible) {
+  const closeButton = $("#close-modal");
+  const binderButton = $("#modal-done");
+  closeButton.hidden = !visible;
+  binderButton.hidden = !visible;
+  closeButton.setAttribute("aria-hidden", String(!visible));
+  binderButton.setAttribute("aria-hidden", String(!visible));
+}
 let opening = {
   cards: [],
   boosterClicks: 0,
@@ -215,8 +223,7 @@ function openPack() {
   $("#summary-grid").innerHTML = "";
   $("#opening-status").textContent =
     "Clique 3 fois sur le booster pour l'ouvrir.";
-  $("#modal-done").hidden = true;
-  $("#close-modal").hidden = true;
+  setOpeningActionsVisible(false);
   $("#pack-modal").classList.add("open");
   $("#pack-modal").classList.remove("summary-mode");
   $("#pack-modal").setAttribute("aria-hidden", "false");
@@ -269,8 +276,7 @@ async function revealNextCard() {
         return `<div class="summary-card" style="--card-color:${card.color}"><span>${card.glyph}</span><small>${card.name}</small></div>`;
       })
       .join("");
-    $("#modal-done").hidden = false;
-    $("#close-modal").hidden = false;
+    setOpeningActionsVisible(true);
     $("#pack-modal").classList.add("summary-mode");
     $("#modal-done").focus();
     renderStats();
